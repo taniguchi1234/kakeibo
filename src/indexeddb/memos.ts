@@ -3,7 +3,7 @@ import Dexie from 'dexie'
 export interface MemoRecord {
   balance:string
   date: string
-  category: string
+  category: { value: string; label: string; }
   amount:string
   memo: string
   datetime:string
@@ -14,7 +14,7 @@ database.version(1).stores({ memos: '&datetime' })
 const memos: Dexie.Table<MemoRecord, string> = database.table('memos')
 
 export const putMemo 
-    = async (balance:string, date: string,category: string,amount:string,memo: string): Promise<void> => {
+    = async (balance:string, date:string,category:{ value: string; label: string; },amount:string,memo:string): Promise<void> => {
   const datetime = new Date().toISOString()
   await memos.put({ datetime, balance, date, category,amount,memo})
 }
