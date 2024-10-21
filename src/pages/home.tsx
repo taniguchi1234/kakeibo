@@ -7,6 +7,7 @@ import { Button } from '../components/button';
 import Select from 'react-select'
 import { Link } from 'react-router-dom'
 import { Header } from '../components/header'
+import { useStateWithStorage } from '../hooks/use_state_with_storage'
 
 
 const { useState } = React
@@ -121,11 +122,20 @@ const Submitbuttun= styled.button`
     width: 50vw;
     top: 0;
 `
-const StorageKey = 'pages/home:text'
 
 
-export const Home: React.FC =() => {
+interface Props {
+    text: string
+    setText: (text: string) => void
+  }
   
+
+  export const Home: React.FC<Props> = (props) => {
+    //メモ
+    const { text, setText } = props
+    //メモをlocalStorage への保存→カスタムフックへ移管
+    /* const [text, setText] = useState<string>(localStorage.getItem(StorageKey) || '') */
+    /* const [text, setText] = useStateWithStorage('', StorageKey) */
   
   //収入。支出
   //ラジオボタンリスト
@@ -150,9 +160,6 @@ const [category, setCategory] = useState(options[0]);
   //金額
   const [amount, setAmount] = useState('')
   
-  //メモをブラウザに保存する
-  const [text, setText] = useState<string>(localStorage.getItem(StorageKey) || '')
-
   
   //indexDB保存項目
   const saveMemo = (): void => {
@@ -225,11 +232,12 @@ const [category, setCategory] = useState(options[0]);
               </MoneyArea>
                   <Inputlabel>メモ</Inputlabel>
                     <TextArea
-                      onChange={(event) => {
+                      /* onChange={(event) => {
                       const changedText = event.target.value
-                      localStorage.setItem(StorageKey, changedText)
+                      localStorage.setItem(StorageKey, changedText) 
                       setText(changedText)
-                    }}
+                    }} */
+                    onChange={(event) => setText(event.target.value)}
                       value={text}
                     />
               </InputSectiondiv>
