@@ -11,13 +11,6 @@ import { useStateWithStorage } from '../hooks/use_state_with_storage'
 
 
 const { useState } = React
-
-// const Header = styled.header`
-
-//   justify-content: space-around;
-//   display: flex;
-//   border-bottom: 1px solid silver;
-// `
 const Wrapper = styled.div`
 bottom: 0;
 left: 0;
@@ -127,15 +120,21 @@ const Submitbuttun= styled.button`
 interface Props {
     text: string
     setText: (text: string) => void
+    amount: string
+    setAmount: (amount: string) => void
+    date: string
+    setDate: (date: string) => void
   }
   
 
   export const Home: React.FC<Props> = (props) => {
     //メモ
     const { text, setText } = props
-    //メモをlocalStorage への保存→カスタムフックへ移管
-    /* const [text, setText] = useState<string>(localStorage.getItem(StorageKey) || '') */
-    /* const [text, setText] = useStateWithStorage('', StorageKey) */
+    //料金
+    const { amount, setAmount } = props
+    //日付
+    const { date, setDate } = props
+
   
   //収入。支出
   //ラジオボタンリスト
@@ -143,8 +142,7 @@ interface Props {
   const handleChange = (event) => {
     setBalance(event.target.value);
   };
-  //日付
-  const [date, setDate] = useState('')
+
 
   //カテゴリ
   const options = [
@@ -156,9 +154,6 @@ interface Props {
 ];
 const [category, setCategory] = useState(options[0]);
 
-
-  //金額
-  const [amount, setAmount] = useState('')
   
   
   //indexDB保存項目
@@ -171,7 +166,6 @@ const [category, setCategory] = useState(options[0]);
     <HeaderArea>
           <Header title="Markdown Editor">
         <Navi>
-          <button>ホーム</button>
           <button><Atag href = "http://localhost:8080/#/history">一覧</Atag>
           </button>
         </Navi>
@@ -243,9 +237,7 @@ const [category, setCategory] = useState(options[0]);
               </InputSectiondiv>
 
             </InputSection>
-            <Button onClick={saveMemo}>
-                保存する
-            </Button>
+            <button onClick={saveMemo}><Atag href = "http://localhost:8080/#/history">保存する</Atag></button>
         </Form>
         
       

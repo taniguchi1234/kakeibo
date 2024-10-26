@@ -8,6 +8,7 @@ import {
 import styled from 'styled-components'
 import { Header } from '../components/header'
 import {
+  getMemoPageCount,
   getMemos,
   MemoRecord,
 } from '../indexeddb/memos'
@@ -23,12 +24,13 @@ const HeaderArea = styled.div`
 `
 
 const Wrapper = styled.div`
-  bottom: 0;
+  bottom: 3rem;
   left: 0;
   position: fixed;
   right: 0;
   top: 5rem;
   padding: 0 1rem;
+  overflow-y: scroll;
 `
 const Navi =  styled.div`
   display: flex;
@@ -80,26 +82,64 @@ const Memo = styled.button`
     text-overflow: ellipsis;
     white-space: nowrap;
   `
+  const Paging = styled.div`
+    bottom: 0;
+    height: 3rem;
+    left: 0;
+    line-height: 2rem;
+    padding: 0.5rem;
+    position: fixed;
+    right: 0;
+    text-align: center;
+  `
+  
+  const PagingButton = styled.button`
+    background: none;
+    border: none;
+    display: inline-block;
+    height: 2rem;
+    padding: 0.5rem 1rem;
+  
+    &:disabled {
+      color: silver;
+    }
+  `
   
   interface Props {
     setText: (text: string) => void
+    setAmount: (amount: string) => void
+    setDate: (date: string) => void
   }
   export const History: React.FC<Props> = (props) => {
     const { setText } = props
+    const { setAmount } = props
+    const { setDate } = props
     const [memos, setMemos] = useState<MemoRecord[]>([])
+    const [page, setPage] = useState(1)
+    const [maxPage, setMaxPage] = useState(1)
     const history = useHistory()
   
     //useEffect は「副作用 (effect) フック」と呼ばれ、レンダリングの後 に実行
     useEffect(() => {
-      getMemos().then(setMemos)
+      getMemos(1).then(setMemos)
+      getMemoPageCount().then(setMaxPage)
     }, [])
+    const canNextPage: boolean = page < maxPage
+    const canPrevPage: boolean = page > 1
+    const movePage = (targetPage: number) => {
+      if (targetPage < 1 || maxPage < targetPage) {
+        return
+      }
+      setPage(targetPage)
+      getMemos(targetPage).then(setMemos)
+    }
 
   return (
     <>
       <HeaderArea>
-          <Header title="Markdown Editor">
+          <Header title="My Money">
         <Navi>
-          <button><Atag href = "http://localhost:8080/#/editor">homeに戻る</Atag>
+          <button><Atag href = "http://localhost:8080/#/editor">ホームに戻る</Atag>
           </button>
         </Navi>
       </Header>
@@ -110,6 +150,8 @@ const Memo = styled.button`
               key={memo.datetime}
               onClick={() => {
                 setText(memo.memo)
+                setAmount(memo.amount)
+                setDate(memo.date)
                 history.push('/home')
               }}
             >
@@ -121,6 +163,21 @@ const Memo = styled.button`
             </Memo>
           ))}
       </Wrapper>
+      <Paging>
+          <PagingButton
+            onClick={() => movePage(page - 1)}
+            disabled={!canPrevPage}
+          >
+            ＜
+          </PagingButton>
+          {page} / {maxPage}
+          <PagingButton
+            onClick={() => movePage(page + 1)}
+            disabled={!canNextPage}
+          >
+            ＞
+          </PagingButton>
+        </Paging>
       
     </>
   )

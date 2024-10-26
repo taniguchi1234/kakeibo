@@ -19,10 +19,22 @@ export const putMemo
   const datetime = new Date().toISOString()
   await memos.put({ datetime, balance, date, category,amount,memo})
 }
-//取得
-export const getMemos = (): Promise<MemoRecord[]> => {
-  return memos.orderBy('datetime')
-  .reverse()
-  .toArray()
+//総数
+const NUM_PER_PAGE: number = 10
+  
+export const getMemoPageCount = async (): Promise<number> => {
+  const totalCount = await memos.count()
+  const pageCount = Math.ceil(totalCount / NUM_PER_PAGE)
+  return pageCount > 0 ? pageCount : 1
 }
 
+
+//取得
+export const getMemos = (page: number): Promise<MemoRecord[]> => {
+  const offset = (page - 1) * NUM_PER_PAGE
+  return memos.orderBy('datetime')
+              .reverse()
+              .offset(offset)
+              .limit(NUM_PER_PAGE)
+              .toArray()
+}
