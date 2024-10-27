@@ -140,6 +140,8 @@ interface Props {
     setAmount: (amount: string) => void
     date: string
     setDate: (date: string) => void
+    datetime:string
+    setDatetime:(datetime: string) => void
   }
   
 
@@ -174,8 +176,13 @@ const [category, setCategory] = useState(options[0]);
   const saveMemo = (): void => {
       putMemo(balance, date,category,amount,text)
   }
+  /* //indexDB削除
+  const deleteMemo = (datetime:string): void => {
+      deleteMemo(datetime)
+  }
+ */
 
-  //イベント
+  //今月取得
   const thisMonth = () => {
   const today = new Date();
   return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
@@ -183,34 +190,7 @@ const [category, setCategory] = useState(options[0]);
     "0"
   )}`;
 };
-/* const renderEventContent = (eventInfo: EventContentArg) => (
-	<>
-		<b>{eventInfo.timeText}</b>
-		<i>{eventInfo.event.title}</i>
-	</>
-); */
-const calendarEvents = [
-    {
-        id: 1,
-        title: 'Qiita書く',
-        description: 'リンクアンドモチベーションのアドベントカレンダーを書く',
-        start: '2022-12-15',
-        end: '2022-12-16',
-        backgroundColor: 'green',
-        borderColor: 'red',
-        editable: true
-    },
-    {
-        id: 2,
-        title: 'Qiita投稿',
-        description: 'リンクアンドモチベーションのアドベントカレンダーを投稿する',
-        start: '2022-12-18',
-        end: '2022-12-18',
-        backgroundColor: 'green',
-        borderColor: 'red',
-        editable: false
-    }
-]
+
 //計算
 const [memos, setMemos] = useState<MemoRecord[]>([])
     useEffect(() => {
@@ -235,6 +215,14 @@ for (let i = 0; i < memos.length; i += 1) {
   }
 }
 
+const calenderMap = memos.map( memo => {
+    return {
+            date: memo.date,
+            title: memo.amount,
+            backgroundcolor:(memo.category.value === "支出")?"red" :"blue"
+    };
+  });
+
 
   return (
     <>
@@ -248,12 +236,9 @@ for (let i = 0; i < memos.length; i += 1) {
       </HeaderArea>
       <Wrapper>
         <Calendar>
-          <FullCalendar 
-          events={[
-          { title: "event 1", date: `${thisMonth()}-01` },
-          { title: "event 2", date: `${thisMonth()}-02` },
-        ]}
-          plugins={[dayGridPlugin]}/>
+        <FullCalendar  
+        events={calenderMap}
+        plugins={[dayGridPlugin]}/>
         </Calendar> 
         <Form>
             <InputSection>
@@ -310,13 +295,12 @@ for (let i = 0; i < memos.length; i += 1) {
                       value={text}
                     />
               </InputSectiondiv>
-
             </InputSection>
             <button onClick={saveMemo}><Atag href = "http://localhost:8080/#/history">保存する</Atag></button>
             <div>
-          {thisMonth()}
-          収入:{plus}- 支出{mainasu} = 合計:{total}円
-        </div>
+              {thisMonth()}
+              収入:{plus}- 支出{mainasu} = 合計:{total}円
+            </div>
         </Form>
       </Wrapper>
     </>

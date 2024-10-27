@@ -45,6 +45,8 @@ const Main: React.FC = () => {
               setAmount = {setAmount}
               date = {date}
               setDate = {setDate}
+              datetime = {datetime}
+              setDatetime = {setDatetime}
               // category = {category}
               // setCategory = {setCategory}
               // balance = {balance}

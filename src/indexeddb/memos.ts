@@ -21,10 +21,10 @@ export const putMemo
 }
 
 
-//削除
-export const deleteMemo = async (datetime:string): Promise<void> => {
-  await memos.delete(datetime);
-}
+// //削除
+// export const deleteMemo = async (datetime:string): Promise<void> => {
+//   await memos.delete( datetime);
+// }
 
 
 
