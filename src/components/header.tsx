@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
+
 const HeaderWrapper = styled.header`
   align-content: center;
   display: flex;
@@ -9,6 +10,7 @@ const HeaderWrapper = styled.header`
   line-height: 2rem;
   padding: 0.5rem 1rem;
   font-weight: bold;
+  border-bottom: 1px solid silver;
 `
 
 const HeaderTitle = styled.div`

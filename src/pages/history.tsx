@@ -22,7 +22,6 @@ const HeaderArea = styled.div`
   right: 0;
   top: 0;
   left: 0;
-  border-bottom: 1px solid silver;
 `
 
 const Wrapper = styled.div`
@@ -49,7 +48,7 @@ const Memo = styled.button`
     display: block;
     background-color: white;
     border: 1px solid gray;
-    width: 100%;
+    width: 100%; 
     padding: 1rem;
     margin: 1rem 0;
     text-align: left;
@@ -106,7 +105,7 @@ const Memo = styled.button`
       color: silver;
     }
   `
-  
+
   interface Props {
     setText: (text: string) => void
     setAmount: (amount: string) => void
@@ -171,7 +170,6 @@ const Memo = styled.button`
               <MemoDB>{memo.memo}</MemoDB>
               <button>削除</button>
           </Memo>
-
           ))}
       </Wrapper>
       <Paging>

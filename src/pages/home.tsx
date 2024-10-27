@@ -2,7 +2,6 @@ import * as React from 'react'
 import styled from 'styled-components'
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-// import { EventContentArg } from '@fullcalendar/react';
 import { putMemo } from '../indexeddb/memos'
 import { Button } from '../components/button';
 import Select from 'react-select'
@@ -48,28 +47,27 @@ const buttun =  styled.button`
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
+    background-color: blue;
 `
-
 
 const Form = styled.div`
   font-size: 1rem;
   padding: 0.7rem;
   top: 0;
   right:0;
-  width: 30%;
+  width: 100%;
 `
 const Nyuryoku = styled.div`
   text-align :center;
 
 `
-
 const InputSection = styled.section`
     display: flex;
     justify-content: space-around;
 
 `
 const InputSectiondiv= styled.div`
-    margin: 0 10px 10px 0;
+    margin: 10px 20px 20px 10px;
     flex-grow: 1;
 
 `
@@ -114,19 +112,20 @@ const Submitbuttun= styled.button`
     width: 50vw;
     top: 0;
 `
-const Balance = styled.div`
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
+  const Fixdiv = styled.div`
+    display: block;
+    padding:10px 10px 10px 10px;
+    margin-top: 30px;
+    border:1px solid blue;
   `
-  
-  const Datesel = styled.div`
-    font-size: 0.85rem;
+  const Fixmonth = styled.div`
+    font-size: 1.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   `
-  const Amount = styled.div`
-    font-size: 0.85rem;
+  const Fix = styled.div`
+    font-size: 1.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -200,8 +199,6 @@ let total :number = 0;
 let mainasu :number = 0;
 let plus :number = 0;
 
-
-
 for (let i = 0; i < memos.length; i += 1) {
   let subDate = memos[i].date.slice(0, 7);
   if(subDate === thisMonth()){
@@ -227,13 +224,13 @@ const calenderMap = memos.map( memo => {
   return (
     <>
     <HeaderArea>
-          <Header title="My Money">
+      <Header title="My Money">
         <Navi>
           <button><Atag href = "http://localhost:8080/#/history">一覧</Atag>
           </button>
         </Navi>
       </Header>
-      </HeaderArea>
+    </HeaderArea>
       <Wrapper>
         <Calendar>
         <FullCalendar  
@@ -297,10 +294,10 @@ const calenderMap = memos.map( memo => {
               </InputSectiondiv>
             </InputSection>
             <button onClick={saveMemo}><Atag href = "http://localhost:8080/#/history">保存する</Atag></button>
-            <div>
-              {thisMonth()}
-              収入:{plus}- 支出{mainasu} = 合計:{total}円
-            </div>
+            <Fixdiv>
+              <Fixmonth>{thisMonth()}</Fixmonth>
+              <Fix>収入:{plus}- 支出{mainasu} = 合計:{total}円</Fix>
+            </Fixdiv>
         </Form>
       </Wrapper>
     </>
