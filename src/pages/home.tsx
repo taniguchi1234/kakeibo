@@ -2,15 +2,21 @@ import * as React from 'react'
 import styled from 'styled-components'
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+// import { EventContentArg } from '@fullcalendar/react';
 import { putMemo } from '../indexeddb/memos'
 import { Button } from '../components/button';
 import Select from 'react-select'
 import { Link } from 'react-router-dom'
 import { Header } from '../components/header'
 import { useStateWithStorage } from '../hooks/use_state_with_storage'
+import {
+  getMemoPageCount,
+  getMemos,
+  MemoRecord,
+} from '../indexeddb/memos'
 
 
-const { useState } = React
+const {useState, useEffect } = React
 const Wrapper = styled.div`
 bottom: 0;
 left: 0;
@@ -44,13 +50,6 @@ const buttun =  styled.button`
     transform: translateY(-50%) translateX(-50%);
 `
 
-/* const Wrapper = styled.div`
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  top:10rem;
-` */
 
 const Form = styled.div`
   font-size: 1rem;
@@ -115,6 +114,23 @@ const Submitbuttun= styled.button`
     width: 50vw;
     top: 0;
 `
+const Balance = styled.div`
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  `
+  
+  const Datesel = styled.div`
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `
+  const Amount = styled.div`
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `
 
 
 interface Props {
@@ -154,17 +170,76 @@ interface Props {
 ];
 const [category, setCategory] = useState(options[0]);
 
-  
-  
   //indexDB保存項目
   const saveMemo = (): void => {
       putMemo(balance, date,category,amount,text)
+  }
+
+  //イベント
+  const thisMonth = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}`;
+};
+/* const renderEventContent = (eventInfo: EventContentArg) => (
+	<>
+		<b>{eventInfo.timeText}</b>
+		<i>{eventInfo.event.title}</i>
+	</>
+); */
+const calendarEvents = [
+    {
+        id: 1,
+        title: 'Qiita書く',
+        description: 'リンクアンドモチベーションのアドベントカレンダーを書く',
+        start: '2022-12-15',
+        end: '2022-12-16',
+        backgroundColor: 'green',
+        borderColor: 'red',
+        editable: true
+    },
+    {
+        id: 2,
+        title: 'Qiita投稿',
+        description: 'リンクアンドモチベーションのアドベントカレンダーを投稿する',
+        start: '2022-12-18',
+        end: '2022-12-18',
+        backgroundColor: 'green',
+        borderColor: 'red',
+        editable: false
     }
+]
+//計算
+const [memos, setMemos] = useState<MemoRecord[]>([])
+    useEffect(() => {
+      getMemos(memos.length).then(setMemos)
+    }, [])
+let total :number = 0;
+let mainasu :number = 0;
+let plus :number = 0;
+
+
+
+for (let i = 0; i < memos.length; i += 1) {
+  let subDate = memos[i].date.slice(0, 7);
+  if(subDate === thisMonth()){
+    if (memos[i].balance === '収入'){
+      plus += Number(memos[i].amount);
+      total += Number(memos[i].amount);
+    }else{
+      mainasu += Number(memos[i].amount);
+      total -= Number(memos[i].amount);
+    }
+  }
+}
+
 
   return (
     <>
     <HeaderArea>
-          <Header title="Markdown Editor">
+          <Header title="My Money">
         <Navi>
           <button><Atag href = "http://localhost:8080/#/history">一覧</Atag>
           </button>
@@ -173,7 +248,12 @@ const [category, setCategory] = useState(options[0]);
       </HeaderArea>
       <Wrapper>
         <Calendar>
-          <FullCalendar plugins={[dayGridPlugin]}/>
+          <FullCalendar 
+          events={[
+          { title: "event 1", date: `${thisMonth()}-01` },
+          { title: "event 2", date: `${thisMonth()}-02` },
+        ]}
+          plugins={[dayGridPlugin]}/>
         </Calendar> 
         <Form>
             <InputSection>
@@ -209,7 +289,7 @@ const [category, setCategory] = useState(options[0]);
                 <Select
                     options = {options}
                     onChange={(value) => {
-                  value ? setCategory(value) : null;
+                    value ? setCategory(value) : null;
                     }}
                   />
               </InputSectiondiv>
@@ -226,11 +306,6 @@ const [category, setCategory] = useState(options[0]);
               </MoneyArea>
                   <Inputlabel>メモ</Inputlabel>
                     <TextArea
-                      /* onChange={(event) => {
-                      const changedText = event.target.value
-                      localStorage.setItem(StorageKey, changedText) 
-                      setText(changedText)
-                    }} */
                     onChange={(event) => setText(event.target.value)}
                       value={text}
                     />
@@ -238,15 +313,12 @@ const [category, setCategory] = useState(options[0]);
 
             </InputSection>
             <button onClick={saveMemo}><Atag href = "http://localhost:8080/#/history">保存する</Atag></button>
+            <div>
+          {thisMonth()}
+          収入:{plus}- 支出{mainasu} = 合計:{total}円
+        </div>
         </Form>
-        
-      
-      
       </Wrapper>
-
-      
-      
-      
     </>
   )
 }

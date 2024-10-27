@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { Button } from '../components/button'
+import { deleteMemo } from '../indexeddb/memos'
+
 
 import {
   Link,
@@ -109,11 +111,13 @@ const Memo = styled.button`
     setText: (text: string) => void
     setAmount: (amount: string) => void
     setDate: (date: string) => void
+    datetime: string
   }
   export const History: React.FC<Props> = (props) => {
     const { setText } = props
     const { setAmount } = props
     const { setDate } = props
+    const {datetime} =props
     const [memos, setMemos] = useState<MemoRecord[]>([])
     const [page, setPage] = useState(1)
     const [maxPage, setMaxPage] = useState(1)
@@ -133,6 +137,11 @@ const Memo = styled.button`
       setPage(targetPage)
       getMemos(targetPage).then(setMemos)
     }
+
+  //indexDB削除
+  const deleteMemo = (): void => {
+      deleteMemo
+  }
 
   return (
     <>
@@ -154,13 +163,15 @@ const Memo = styled.button`
                 setDate(memo.date)
                 history.push('/home')
               }}
-            >
+          >
               <Balance>{memo.balance}</Balance>
               <Date>{memo.date}</Date>
               <Category>{memo.category.value}</Category>
               <Amount>{memo.amount}</Amount>
               <MemoDB>{memo.memo}</MemoDB>
-            </Memo>
+              <button>削除</button>
+          </Memo>
+
           ))}
       </Wrapper>
       <Paging>

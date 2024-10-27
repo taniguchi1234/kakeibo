@@ -19,6 +19,15 @@ export const putMemo
   const datetime = new Date().toISOString()
   await memos.put({ datetime, balance, date, category,amount,memo})
 }
+
+
+//削除
+export const deleteMemo = async (datetime:string): Promise<void> => {
+  await memos.delete(datetime);
+}
+
+
+
 //総数
 const NUM_PER_PAGE: number = 10
   

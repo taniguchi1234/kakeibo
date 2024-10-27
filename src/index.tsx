@@ -22,7 +22,7 @@ const StorageKeyAmount = '/home:amount'
 const StrorageKeyDate = '/home:date'
 // const StrorageKeyCategory = '/home:category'
 // const StrorageKeyBalance = '/home:balance'
-// const StrorageDatetime = '/home:datetime'
+const StrorageDatetime = '/home:datetime'
   
 const Main: React.FC = () => {
   const [text, setText] = useStateWithStorage('', StorageKey)
@@ -30,7 +30,7 @@ const Main: React.FC = () => {
   const [date, setDate] = useStateWithStorage('', StrorageKeyDate)
   // const [category, setCategory] = useStateWithStorage('', StrorageKeyCategory)
   // const [balance, setBalance] = useStateWithStorage('', StrorageKeyBalance)
-  // const [datetime  ,setDatetime ]= useStateWithStorage('',StrorageDatetime)
+  const [datetime  ,setDatetime ]= useStateWithStorage('',StrorageDatetime)
 
   return (
     <>
@@ -57,6 +57,7 @@ const Main: React.FC = () => {
               setAmount = {setAmount}
               setText={setText}
               setDate ={setDate}
+              datetime={datetime}
               // setCategory={setCategory}
               // setBalance={setBalance}
 
